@@ -94,53 +94,15 @@
 			$cmd="pdftk"; //For linux and mac
 		}
 		
-		$dircmd=fix_path(dirname(__file__));
-		
-		if(file_exists("$dircmd/$cmd")) {
-		
-			$pdf_out=FPDM_CACHE."pdf_flatten.pdf";
+		$pdf_out=FPDM_CACHE."pdf_flatten.pdf";
 			
-			$cmdline="$dircmd/$cmd \"$pdf_file\" fill_form \"$fdf_file\" output \"$pdf_out\" $output_modes $security"; //direct to ouptut	
-
-			//echo htmlentities("$cmdline , $descriptorspec, $cwd, $env");
-
-			if(PHP5_ENGINE) { // Php5
-				$process = proc_open($cmdline, $descriptorspec, $pipes, $cwd, $env);
-			}else { //Php4
-				$process = proc_open($cmdline, $descriptorspec, $pipes);
-			}
-
-			if (is_resource($process)) {
-
-				if(PHP5_ENGINE) { 
-					$err=stream_get_contents($pipes[2]);
-				}else { //Php4
-					$err= "";
-					while (($str = fgets($pipes[2], 4096))) {
-						$err.= "$str\n";
-					}
-				}
-
-				fclose($pipes[2]);
-				
-				//Its important to close the pipes before proc_close call to avoid  dead locks 
-				$return_value = proc_close($process);
-				
-			}else {
-				$err="No more resource to execute the command";
-			}
-			
-		}else {
-			$err="Sorry but pdftk binary is not provided / Cette fonctionnalite requiere pdftk non fourni ici<ol>";
-			$err.="<li>download it from / telecharger ce dernier a partir de <br><blockquote><a href=\"http://www.pdflabs.com/docs/install-pdftk/\">pdflabs</a></blockquote>";
-			$err.="<li>copy the executable in this directory / Copier l'executable dans<br><blockquote><b>$dircmd</b></blockquote>" ;
-			$err.="<li>set \$cmd to match binary name in / configurer \$cmd pour  qu'il corresponde dans le fichier<br><blockquote><b>".__file__."</b></blockquote></ol>";
-		}
+		exec("pdftk \"$pdf_file\" fill_form \"$fdf_file\" output \"$pdf_out\" $output_modes $security", $output, $return);
 		
-		if($err) {
-			$ret=array("success"=> false,"return"=>$err);
-		}else 
+		// Return will return non-zero upon an error
+		if(!$return) {
 			$ret=array("success"=> true,"return"=>$pdf_out);
+		}else 
+			$ret=array("success"=> false,"return"=>$err);
 
 		return $ret;
 	}

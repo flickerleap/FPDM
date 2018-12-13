@@ -469,9 +469,9 @@ class FPDM
                 if ($count_fields) {
                     foreach ($fields as $name => $value) {
                         $this->set_field_value("current", $name, $value);
-//							$value=''; //Strategy applies only to current value, clear others
-//							$this->set_field_value("default",$name,$value);
-//							$this->set_field_value("tooltip",$name,$value);
+//                          $value=''; //Strategy applies only to current value, clear others
+//                          $this->set_field_value("default",$name,$value);
+//                          $this->set_field_value("tooltip",$name,$value);
                     }
                 }
                 //===========================================================
@@ -544,7 +544,7 @@ class FPDM
             require_once("export/pdf/pdftk.php");//Of course don't forget to bridge to PDFTK!
 
             $tmp_file = false;
-            $pdf_file = resolve_path(fix_path(dirname(__FILE__) . '/' . $this->pdf_source));      //string: full pathname to the input pdf , a form file
+            $pdf_file = $this->pdf_source;      //string: full pathname to the input pdf , a form file
 
             if ($this->fdf_source) { //FDF file provided
                 $fdf_file = resolve_path(fix_path(dirname(__FILE__) . '/' . $this->fdf_source));
@@ -586,7 +586,7 @@ class FPDM
 
             $ret = pdftk($pdf_file, $fdf_file, array("security" => $security, "output_modes" => $output_modes));
 
-            if ($tmp_file) @unlink($fdf_file); //Clear cache
+            if ($tmp_file) unlink($fdf_file); //Clear cache
 
             if ($ret["success"]) {
                 $pdf_file = $ret["return"];
@@ -838,8 +838,8 @@ class FPDM
                 $offset_shift = $this->set_field_tooltip($name, $value);
 
             } else {//if(isset($this->value_entries["$name"]["values"]["$type"])) {
-//				echo $this->value_entries["$name"]["values"]["$type"];
-                /*					$field_value_line=$this->value_entries["$name"]["values"]["$type"];
+//              echo $this->value_entries["$name"]["values"]["$type"];
+                /*                  $field_value_line=$this->value_entries["$name"]["values"]["$type"];
                                     $field_value_maxlen=$this->value_entries["$name"]["constraints"]["maxlen"];
 
                                     if($field_value_maxlen) //Truncates the size if needed
@@ -852,8 +852,8 @@ class FPDM
                 else
                     $offset_shift = $this->_set_field_value2($this->value_entries[$name]["infos"]["name_line"], $value, true);
             }
-//				}else
-//					$this->Error("set_field_value failed as invalid valuetype $type for object $object_id");
+//              }else
+//                  $this->Error("set_field_value failed as invalid valuetype $type for object $object_id");
 
 
             //offset size shift will affect the next objects offsets taking into accound the order they appear in the file--
@@ -1604,14 +1604,14 @@ class FPDM
                                     $lines["$name"] = $object;
                                     if ($verbose_parsing) $this->dumpContent("$type $subtype (obj id=$obj) is a text annotation of name '$name', saves it.");
                                 }//else
-//										$this->Error("$type $subtype (obj id=$obj) is a text annotation without a name, this cannot be.");
+//                                      $this->Error("$type $subtype (obj id=$obj) is a text annotation without a name, this cannot be.");
 
 
                                 $values = $object["values"];
 
                                 //Sanity values checks, watchdog.
-//									if(!array_key_exists("current",$values)) $this->Error("Cannot find value (/V) for field $name");
-//									if(!array_key_exists("default",$values)) $this->Error("Cannot find default value (/DV) for field $name");
+//                                  if(!array_key_exists("current",$values)) $this->Error("Cannot find value (/V) for field $name");
+//                                  if(!array_key_exists("default",$values)) $this->Error("Cannot find default value (/DV) for field $name");
 
                             } else
                                 if ($verbose_parsing) $this->dumpContent("Object $type $subtype (obj id=$obj) is not supported");
@@ -1815,13 +1815,13 @@ class FPDM
                                 }
 
                                 //TODO: Fetch the XObject..and change Td <> Tj
-                                /*										if(preg_match("/^\/AP/",$CurLine,$values)) {
+                                /*                                      if(preg_match("/^\/AP/",$CurLine,$values)) {
                                                                             //die("stop");
                                                                             $CurLine=''; //clear link to Xobject
                                                                             $entries[$Counter]=$CurLine;
                                                                         }*/
 
-//									}
+//                                  }
 
                             }
 
