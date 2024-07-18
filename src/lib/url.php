@@ -139,7 +139,7 @@ if (!defined('URL_TOOLBOX')) {
             if ($fold == '..' && $i > 0 && end($out) != '..') array_pop($out);
             else $out[] = $fold;
         }
-        return ($path{0} == '/' ? '/' : '') . join('/', $out);
+        return ($path[0] == '/' ? '/' : '') . join('/', $out);
     }
 
 
